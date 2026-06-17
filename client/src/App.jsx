@@ -2,8 +2,7 @@ import React, { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUserData } from "./redux/userSlice";
-import axiosInstance from "./utils/axiosInstance";
-import ProtectedRoute from "./components/ProtectedRoute";
+import axios from "axios";
 
 import Home from "./pages/Home";
 import Auth from "./pages/Auth";
@@ -12,13 +11,17 @@ import InterviewHistory from "./pages/InterviewHistory";
 import Pricing from "./pages/Pricing";
 import InterviewReport from "./pages/InterviewReport";
 
+export const ServerUrl = import.meta.env.VITE_SERVER_URL;
+
 function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
     const getUser = async () => {
       try {
-        const result = await axiosInstance.get("/api/user/current-user");
+        const result = await axios.get(ServerUrl + "/api/user/current-user", {
+          withCredentials: true,
+        });
         dispatch(setUserData(result.data));
       } catch (error) {
         dispatch(setUserData(null));
@@ -32,31 +35,9 @@ function App() {
       <Route path="/" element={<Home />} />
       <Route path="/auth" element={<Auth />} />
       <Route path="/pricing" element={<Pricing />} />
-
-      <Route
-        path="/interview"
-        element={
-          <ProtectedRoute>
-            <InterviewPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/history"
-        element={
-          <ProtectedRoute>
-            <InterviewHistory />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/report/:id"
-        element={
-          <ProtectedRoute>
-            <InterviewReport />
-          </ProtectedRoute>
-        }
-      />
+      <Route path="/interview" element={<InterviewPage />} />
+      <Route path="/history" element={<InterviewHistory />} />
+      <Route path="/report/:id" element={<InterviewReport />} />
     </Routes>
   );
 }
