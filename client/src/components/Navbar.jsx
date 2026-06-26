@@ -20,9 +20,13 @@ function Navbar() {
 
   const handleLogout = async () => {
     try {
-      await axios.get(ServerUrl + "/api/auth/logout", {
-        withCredentials: true,
-      });
+      await axios.post(
+        ServerUrl + "/api/auth/logout",
+        {},
+        {
+          withCredentials: true,
+        },
+      );
       dispatch(setUserData(null));
       setShowCreditPopup(false);
       setShowUserPopup(false);
@@ -109,7 +113,7 @@ function Navbar() {
                   onClick={() => navigate("/history")}
                   className="w-full text-left text-sm py-2 hover:text-black text-gray-600"
                 >
-                  InterView History
+                  Interview History
                 </button>
                 <button
                   onClick={handleLogout}
